@@ -17,3 +17,6 @@ see the slides at URL.
 
 
 We need to upload a file called `index.html` (my poster/codebook/slide deck as an html file). You take the file in Rmd format. MAY ONLY BE CALLED INDEX.HTML
+
+
+You can view the output here: _____ 

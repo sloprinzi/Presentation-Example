@@ -1,0 +1,247 @@
+---
+title: Gender and Ages of Refugees
+author: Siena Loprinzi
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: xaringan-themer.css
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+    transition: "slide"
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+
+setwd("/Users/sienaloprinzi/Desktop/Stats/10 - Presentation 2")
+
+library(tidyverse)
+
+library("readxl")
+
+library(patchwork)
+
+library(scales)
+
+library(ggplot2)
+
+library(xaringanthemer)
+
+library(showtext)
+
+library(ggtech)
+
+library(extrafont)
+
+library(gridExtra)
+
+ages = read_xlsx("editeddemographics.xlsx")
+
+df = ages %>%
+  filter(Year == 2019, Country == "Syria")%>%
+  mutate(PopPerc=case_when(Gender=='M'~round(Population/sum(Population)*100,2),
+                           TRUE~-round(Population/sum(Population)*100,2)),
+         signal=case_when(Gender=='M'~1,
+                          TRUE~-1))
+
+levels(df$Age)
+df$Age <- factor(df$Age,levels=unique(df$Age),ordered=TRUE)
+
+df2 = ages %>%
+  filter(Year == 2019)%>%
+  mutate(PopPerc=case_when(Gender=='M'~round(Population/sum(Population)*100,2), TRUE~-round(Population/sum(Population)*100,2)),
+         signal=case_when(Gender=='M'~1,
+                          TRUE~-1))
+
+levels(df2$Age)
+df2$Age <- factor(df2$Age,levels=unique(df2$Age),ordered=TRUE)
+
+df3 = ages %>%
+  filter(Year == 2021)%>%
+  mutate(PopPerc=case_when(Gender=='M'~round(Population/sum(Population)*100,2), TRUE~-round(Population/sum(Population)*100,2)),
+         signal=case_when(Gender=='M'~1,
+                          TRUE~-1))
+
+levels(df3$Age)
+df3$Age <- factor(df3$Age,levels=unique(df3$Age),ordered=TRUE)
+
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer)
+style_mono_accent(
+  base_color = "#fdf7f0",
+  header_font_google = google_font("Josefin Sans"),
+  text_font_google   = google_font("Montserrat", "300", "300i"),
+  code_font_google   = google_font("Fira Mono")
+)
+style_duo_accent(primary_color = "#54B5FB", secondary_color = "#fdf7f0")
+
+```
+ 
+ 
+ 
+#**UNHCR**
+--
+
+
+The United Nations High Commissioner for Refugees is the UN refugee agency protecting the rights and lives of refugees, forcibly displaced communities, and stateless people. 
+
+--
+
+- This data comes from the [Refugee Data Finder](https://www.unhcr.org/refugee-statistics/download/?url=AkSU25) which is from the UNHCR. This data covers refugee data including ages, genders, location they are coming from, location they are in, and many other variables. According to the UNHCR, there is an estimated 10 million stateless people residing in 95 countries around the world. 
+--
+
+
+- 72% of refugees come from just five countries: 
+--
+
+
+  + Syrian Arab Republic
+  + Venezuela
+  + Ukraine
+  + Afghanistan
+  + South Sudan
+  
+   
+---
+background-image: url(https://www.un.org/youthenvoy/wp-content/uploads/2014/09/UNHCR1.jpg)
+background-position: center 80%
+class: center, 30%
+
+Before we continue with the presentation, just a moment to remember that this data comes from real adults and children. Sometimes it can be easy to distance ourselves from the data, but it is always important to think about the people behind the data including the 70,000 children that are being born as refugees or stateless people every year. 
+
+---
+class: center, middle
+
+#**Lets get into the data!**
+
+
+The slide following the graphs will explain the data in depth. 
+
+---
+```{r echo=FALSE, warning=FALSE, tidy=FALSE, out.width="80%", class.source="center"}
+ggplot(df) +
+  geom_bar(aes(x = Age, y = PopPerc, fill = Gender), stat = "identity") +
+  geom_text(aes(x = Age, y = PopPerc + signal * 0.3, label = abs(PopPerc))) +
+  coord_flip() +
+  scale_fill_manual(name = "", values = c("#F8B7CD", "#67A3d9"), labels = c("Female", "Male")) +
+  scale_y_continuous(breaks = seq(-50, 50, 10), labels = function(x) { paste(abs(x), "%") }) +
+  labs(
+    x = "Age Ranges",
+    y = "Refugees (% of Pop.)",
+    title = "Syrian Refugee Population",
+    subtitle = "by Age and Gender, 2019",
+    caption = "Source: UNHCR Refugee Data Finder"
+  ) +
+  theme_tech(theme = "airbnb") +
+  theme(
+    plot.title = element_text(color = "#54B5FB", hjust = 0.5),
+    plot.subtitle = element_text(color = "#54B5FB", size = 20, hjust = 0.5),
+    legend.position = "top",
+    legend.justification = "center"
+  )
+```
+
+
+---
+
+class: center, middle
+
+###**Syrian Refugee Population, 2019**
+
+Since Syria had the most refugees in 2019, let’s first look at the age and gender of the Syrian refugee population. 
+
+
+--
+
+
+From the graph in the slide before, we can see that a very small portion of the Syrian refugee population is 60 or older. The majority of people are between the ages of 18-59 and we also find that there are more men than women. We can find that this trend of more men than women continues for the age groups of 12-17 and 5-11, with a very small amount of girls to boys in ages 0-4. We can also see from this data that there are many Syrian refugee children, with the largest age group of children being 5-11 years of age. 
+
+---
+
+```{r echo=FALSE, warning=FALSE, tidy=FALSE, out.width="80%", class.source="center"}
+
+df2_graph = ggplot(df2) +
+  geom_bar(aes(x = Age, y = PopPerc, fill = Gender), stat = "identity") +
+  coord_flip() +
+  scale_fill_manual(name = "", values = c("#F8B7CD", "#67A3d9"), labels = c("Female", "Male")) +
+  scale_y_continuous(breaks = seq(-50, 50, 10), labels = function(x) { paste(abs(x), "%") }) +
+  labs(
+    x = "Age Ranges",
+    y = "Refugees (% of Pop.)"
+  ) +
+  theme_tech(theme = "airbnb") +
+  theme(
+    legend.position = "top",
+    legend.justification = "center"
+  )
+
+
+df3_graph = ggplot(df3) +
+  geom_bar(aes(x = Age, y = PopPerc, fill = Gender), stat = "identity") +
+  coord_flip() +
+  scale_fill_manual(name = "", values = c("#F8B7CD", "#67A3d9"), labels = c("Female", "Male")) +
+  scale_y_continuous(breaks = seq(-50, 50, 10), labels = function(x) { paste(abs(x), "%") }) +
+  labs(
+    x = "Age Ranges",
+    y = "Refugees (% of Pop.)"
+  ) +
+  theme_tech(theme = "airbnb") +
+  theme(
+    legend.position = "top",
+    legend.justification = "center"
+  )
+
+dffull = df2_graph + df3_graph + plot_layout(ncol=2) + 
+      plot_annotation(title = "Top 5 Countries Refugee Population",
+                      subtitle = "by Age and Gender, 2019 and 2021",
+                      caption = "Source: UNHCR Refugee Data Finder",
+                      theme = theme(plot.title = element_text(color = "#54B5FB", size = 25, hjust = 0.5),
+    plot.subtitle = element_text(color = "#54B5FB", size = 20, hjust = 0.5))) 
+    
+
+    dffull
+    
+
+```
+
+---
+
+class: center, middle
+
+###**Top 5 Countries Refugee Population, 2019 and 2021**
+
+
+In the graph from the slide before, we see the refugee populations for the top five countries of refugees which are: Syrian Arab Republic, Venezuela, Ukraine, Afghanistan, and South Sudan. The graph on the left showed the numbers from 2019, and the graph on the right showed the data from 2021. It is interesting to look at these years because the data is from before and after the COVID pandemic that started in 2020. 
+
+
+--
+
+
+Starting with the left graph, we can see from the 2019 data that there is a very small part of the refugee population that is age 60 or above (about 1% for each male and female). Again, ages 18-59 is the majority of the refugee population and we have 19% for women and 21% women. There are about 5% boys and girls for the 12-17 age category. Then for ages 5-11 there are 8% girls and 9% boys. Finally for the 0-4 years of age we see both girls and boys are roughly 6% of the population. 
+
+
+---
+
+class: center, middle
+
+
+As we move over to the population for 2021, we see a few changes. It is still about 1% of males and female that are 60 or older. When we get to the age group of 18-59 is when we see the biggest changes. The number of females jumps from 19% in 2019 to 22%, males also goes up from 21% in 2019 to 25% in 2021. For ages 12-17 it is still at only 5% for both girls and boys, ages 5-11 stay at exactly the same numbers with 8% being girls and 9% being boys. Where the numbers change again is from the ages of 0-4 with the data finding the numbers going down from 6% for each boys and girls in 2019 to being 5% of the population. 
+
+
+--
+
+
+So the biggest difference that we see from before to after COVID is that more adults between the ages of 18-59 are refugees with less refugees between the ages of 0-4. 
+ 
+
+---
+
+class: center, middle
+
+# Thank you for looking through my presentation!
+
+

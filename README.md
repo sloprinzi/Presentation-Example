@@ -11,7 +11,7 @@ In particular, this presentation was created to "people" the data, including the
 _**To view the presentation, please click [here](https://sloprinzi.github.io/Presentation_Refugee_Ages/#1).**_ 
 
 
-### The data
+### The Data
 
 
 This data comes from the United Nation's High Commissioner for Refugees [Refugee Data Finder](https://www.unhcr.org/refugee-statistics/download/?url=AkSU25) which is publically accessible.  If you would like to recreate the graphs from my presentation, please see the `index.rmd` file above in addition to the dataset I worked with from the UNCHR titled `editeddemographics.xlsx`.  
